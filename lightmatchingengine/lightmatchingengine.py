@@ -18,6 +18,8 @@ class OrderBook(object):
         self.asks = {}
         self.order_id_map = {}
 
+    def __repr__(self):
+        return 'Orderbook [bids:<{}>, asks:<{}>]'.format(len(self.bids), len(self.asks))
 
 class Order(object):
     """
@@ -35,6 +37,10 @@ class Order(object):
         self.leaves_qty = qty
         self.side = side
 
+    def __repr__(self):
+        return 'Order: [order_id:{}, instmt:{}, price:{}, qty:{}, filled_qty:{}, leaves:{}, side:{}]'.format(
+            self.order_id, self.instmt, self.price, self.qty, self.cum_qty, self.leaves_qty, 'BUY' if self.side == 1 else 'SELL')
+
 
 class Trade(object):
     """
@@ -51,6 +57,9 @@ class Trade(object):
         self.trade_side = trade_side
         self.trade_id = trade_id
 
+    def __repr__(self):
+        return 'Trade: [order_id:{}, instmt:{}, trade_price:{}, trade_qty:{}, trade_side:{}, trade_id:{}]'.format(
+            self.order_id, self.instmt, self.trade_price, self.trade_qty, 'BUY' if self.trade_side == 1 else 'SELL', self.trade_id)
 
 class LightMatchingEngine(object):
     """
