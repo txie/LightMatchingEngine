@@ -41,19 +41,16 @@ def lookupOrder(order_book, order_id):
 def lookupOrderbook(symbol, side):
     converted_trade_pair = symbol.replace('-', '/')
     side = side.lower()
-    orderbook = lme.order_books[converted_trade_pair]
-    if orderbook == None:
+    if converted_trade_pair not in lme.order_books:
         return jsonify({'status': 'error', 'message': 'trading pair {} not found'.format(converted_trade_pair)})
-    else:
-        orders = []
-        if side == 'buy' or side == 'bid':
-            for bidOrder in orderbook.bids:
-                orders.append(bidOrder)       
-        elif side == 'sell' or side == 'ask':     
-            for askOrder in orderbook.asks:
-                orders.append(askOrder)
+    orderbook = lme.order_books[converted_trade_pair]
+    orders = []
+    if side == 'buy' or side == 'bid':
+        return jsonify({'side': 'bid', 'depth': len(orderbook.bids) , 'orders': orderbook.json('bid')})
+    elif side == 'sell' or side == 'ask':   
+        return jsonify({'side': 'ask', 'depth': len(orderbook.asks) , 'orders': orderbook.json('ask')})
 
-        return json.dumps(orders)
+    return '{}'
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,4 +1,6 @@
 #!/usr/bin/python3
+import json
+
 class Side:
     """
     Side
@@ -17,6 +19,18 @@ class OrderBook(object):
         self.bids = {}
         self.asks = {}
         self.order_id_map = {}
+
+    def json(self, side):
+        orders = []
+        if side == 'buy' or side == 'bid':
+            for bidPrice in self.bids.keys():
+                for item in self.bids[bidPrice]:
+                    orders.append('{}'.format(item))
+        elif side == 'sell' or side == 'ask':
+            for askPrice in self.asks.keys():
+                for item in self.asks[askPrice]:
+                    orders.append('{}'.format(item))
+        return json.dumps(orders)
 
     def __repr__(self):
         return 'Orderbook [bids:<{}>, asks:<{}>]'.format(len(self.bids), len(self.asks))
@@ -37,8 +51,11 @@ class Order(object):
         self.leaves_qty = qty
         self.side = side
 
+    def json(self):
+        return json.dumps(self.__dict__)
+
     def __repr__(self):
-        return 'Order: [order_id:{}, instmt:{}, price:{}, qty:{}, filled_qty:{}, leaves:{}, side:{}]'.format(
+        return '[order_id:{}, instmt:{}, price:{}, qty:{}, filled_qty:{}, leaves:{}, side:{}]'.format(
             self.order_id, self.instmt, self.price, self.qty, self.cum_qty, self.leaves_qty, 'BUY' if self.side == 1 else 'SELL')
 
 
@@ -57,6 +74,9 @@ class Trade(object):
         self.trade_side = trade_side
         self.trade_id = trade_id
 
+    def json(self):
+        return json.dumps(self.__dict__)
+        
     def __repr__(self):
         return 'Trade: [order_id:{}, instmt:{}, trade_price:{}, trade_qty:{}, trade_side:{}, trade_id:{}]'.format(
             self.order_id, self.instmt, self.trade_price, self.trade_qty, 'BUY' if self.trade_side == 1 else 'SELL', self.trade_id)
